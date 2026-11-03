@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import apiClient from "../api/client.api";
+import { getErrorMessage } from "../api/getErrorMessage";
 import { useToast } from "../contexts/ToastContext";
 
 const useFetch = <T extends unknown>(url: string) => {
@@ -19,8 +20,11 @@ const useFetch = <T extends unknown>(url: string) => {
           : setEmptyResponse(true);
         setLoading(false);
       })
-      .catch(() => {
-        const message = "Failed to load data. Please try again later.";
+      .catch((error) => {
+        const message = getErrorMessage(
+          error,
+          "Failed to load data. Please try again later.",
+        );
         setError(message);
         showToast("error", message);
         setLoading(false);

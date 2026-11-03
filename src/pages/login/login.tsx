@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Car } from "lucide-react";
 import { authService } from "../../services/authService";
+import { getErrorMessage } from "../../api/getErrorMessage";
 import { useToast } from "../../contexts/ToastContext";
 
 function Login() {
@@ -32,8 +33,8 @@ function Login() {
         showToast("success", "Logged in successfully.");
         navigate("/cars");
       })
-      .catch(() => {
-        const message = "Invalid email or password.";
+      .catch((error) => {
+        const message = getErrorMessage(error, "Invalid email or password.");
         setError(message);
         showToast("error", message);
       })

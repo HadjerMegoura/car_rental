@@ -1,8 +1,18 @@
 // src/pages/Profile.tsx
 import { useEffect, useState } from "react";
-import { Camera, Mail, Phone, Shield, Briefcase, Sliders, Lock, History } from "lucide-react";
+import {
+  Camera,
+  Mail,
+  Phone,
+  Shield,
+  Briefcase,
+  Sliders,
+  Lock,
+  History,
+} from "lucide-react";
 import type { User } from "../types/User";
 import apiClient from "../api/client.api";
+import { getErrorMessage } from "../api/getErrorMessage";
 import { useLocation, useParams } from "react-router-dom";
 import { useToast } from "../contexts/ToastContext";
 
@@ -16,11 +26,7 @@ function userDetails() {
 
   useEffect(() => {
     const userUrl =
-      location.pathname === "/profile"
-        ? "/user/me"
-        : id
-          ? `/user/${id}`
-          : "";
+      location.pathname === "/profile" ? "/user/me" : id ? `/user/${id}` : "";
 
     if (!userUrl || userUrl === "") return;
     apiClient
@@ -30,7 +36,10 @@ function userDetails() {
       })
       .catch((error) => {
         console.error("Failed to fetch user data:", error);
-        showToast("error", "Failed to load user details.");
+        showToast(
+          "error",
+          getErrorMessage(error, "Failed to load user details."),
+        );
       });
   }, [id, location.pathname, showToast]);
 
@@ -47,7 +56,10 @@ function userDetails() {
         })
         .catch((error) => {
           console.error("Failed to add new user:", error);
-          showToast("error", "Failed to add new user!");
+          showToast(
+            "error",
+            getErrorMessage(error, "Failed to add new user!"),
+          );
         });
     } else {
       apiClient
@@ -59,7 +71,10 @@ function userDetails() {
         })
         .catch((error) => {
           console.error("Failed to update user data:", error);
-          showToast("error", "Failed to update user data.");
+          showToast(
+            "error",
+            getErrorMessage(error, "Failed to update user data."),
+          );
         });
       setIsEditing(false);
     }
@@ -73,11 +88,19 @@ function userDetails() {
           <p className="text-xs tracking-wider text-[#5f6779] mb-2">
             ADMIN CONSOLE /{" "}
             <span className="text-[#8b93a7] font-medium">
-              {id ? "USER DETAILS" : isNewUser ? "ADD USER" : "ACCOUNT SETTINGS"}
+              {id
+                ? "USER DETAILS"
+                : isNewUser
+                  ? "ADD USER"
+                  : "ACCOUNT SETTINGS"}
             </span>
           </p>
           <h1 className="text-3xl font-bold text-white mb-1">
-            {id ? "User Details" : isNewUser ? "Add User" : "Account & Security"}
+            {id
+              ? "User Details"
+              : isNewUser
+                ? "Add User"
+                : "Account & Security"}
           </h1>
           <p className="text-sm text-[#8b93a7]">
             Manage credentials, permissions, and contact details.
@@ -179,7 +202,9 @@ function userDetails() {
 
       {/* Details form */}
       <div className="bg-[#0d1424] border border-white/10 rounded-2xl p-8">
-        <h3 className="text-lg font-semibold text-white mb-1">General Profile</h3>
+        <h3 className="text-lg font-semibold text-white mb-1">
+          General Profile
+        </h3>
         <p className="text-sm text-[#8b93a7] mb-6">
           Basic identity information for this account.
         </p>

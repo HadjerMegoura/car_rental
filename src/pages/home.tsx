@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Sidebar from "../components/sidebar";
 import Header from "../components/Header";
 import apiClient from "../api/client.api";
+import { getErrorMessage } from "../api/getErrorMessage";
 import { useToast } from "../contexts/ToastContext";
 import { useNavigate } from "react-router-dom";
 
@@ -25,7 +26,10 @@ export const Home = ({ children }: { children: React.ReactNode }) => {
       })
       .catch((error) => {
         console.error("Failed to fetch user data:", error);
-        showToast("error", "Failed to load your profile.");
+        showToast(
+          "error",
+          getErrorMessage(error, "Failed to load your profile."),
+        );
       });
   }, [showToast]);
 

@@ -7,6 +7,7 @@ import useFetch from "../hooks/useFetch";
 import apiClient from "../api/client.api";
 import type { Car } from "../types/Car";
 import { useToast } from "../contexts/ToastContext";
+import { getErrorMessage } from "../api/getErrorMessage";
 
 const BookingFlow = () => {
   const { carId } = useParams();
@@ -55,8 +56,12 @@ const BookingFlow = () => {
       })
       .catch((error) => {
         console.error("Failed to fetch car:", error);
+        showToast(
+          "error",
+          getErrorMessage(error, "Failed to load car details."),
+        );
       });
-  }, [carId]);
+  }, [carId, showToast]);
 
   // Update booking form when car is loaded
   useEffect(() => {
@@ -130,8 +135,8 @@ const BookingFlow = () => {
       showToast("success", "Booking created successfully.");
       navigate("/bookings");
     } catch (error) {
-      console.error("Failed to create booking:", error);
-      showToast("error", "Failed to create booking.");
+      const errorMessage = getErrorMessage(error, "Failed to create booking.");
+      showToast("error", errorMessage);
     }
   };
 

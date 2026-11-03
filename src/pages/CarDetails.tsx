@@ -4,6 +4,7 @@ import { Car, Upload, X } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import type { Car as CarType } from "../types/Car";
 import apiClient from "../api/client.api";
+import { getErrorMessage } from "../api/getErrorMessage";
 import { useToast } from "../contexts/ToastContext";
 
 function CarDetails() {
@@ -33,13 +34,16 @@ function CarDetails() {
         })
         .catch((error) => {
           console.error("Error fetching car details:", error);
-          showToast("error", "Failed to load car details.");
+          showToast(
+            "error",
+            getErrorMessage(error, "Failed to load car details."),
+          );
         });
     } else {
       setCarForm(carDataObjectInitialization);
       setImagePreview(null);
     }
-  }, [id]);
+  }, [id, showToast]);
 
   function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -68,7 +72,7 @@ function CarDetails() {
         })
         .catch((error) => {
           console.error("Error updating car:", error);
-          showToast("error", "Failed to update car.");
+          showToast("error", getErrorMessage(error, "Failed to update car."));
         });
     } else {
       apiClient
@@ -78,7 +82,7 @@ function CarDetails() {
         })
         .catch((error) => {
           console.error("Error adding car:", error);
-          showToast("error", "Failed to add car.");
+          showToast("error", getErrorMessage(error, "Failed to add car."));
         });
     }
   };

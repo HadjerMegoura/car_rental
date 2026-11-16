@@ -1,4 +1,5 @@
 import { Fuel, Gauge } from "lucide-react";
+import { DEFAULT_CAR_IMAGE, getSafeImageUrl } from "../utils/getSafeImageUrl";
 import type { Car } from "../types/Car";
 
 interface CardItemProps {
@@ -16,8 +17,11 @@ const CardItem = ({ car, onBook, onClick }: CardItemProps) => {
       {/* Image + availability badge + tags */}
       <div className="relative h-52 bg-[#151c30]">
         <img
-          src={car.imageUrl}
+          src={getSafeImageUrl(car.imageUrl)}
           alt={car.name}
+          onError={(event) => {
+            event.currentTarget.src = DEFAULT_CAR_IMAGE;
+          }}
           className="w-full h-full object-cover"
         />
 

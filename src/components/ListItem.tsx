@@ -1,4 +1,5 @@
 // src/components/CarListItem.tsx
+import { DEFAULT_CAR_IMAGE, getSafeImageUrl } from "../utils/getSafeImageUrl";
 import type { Car } from "../types/Car";
 
 interface ListItemProps {
@@ -14,8 +15,11 @@ function ListItem({ car, onBook, onClick }: ListItemProps) {
       onClick={onClick}
     >
       <img
-        src={car.imageUrl}
+        src={getSafeImageUrl(car.imageUrl)}
         alt={car.name}
+        onError={(event) => {
+          event.currentTarget.src = DEFAULT_CAR_IMAGE;
+        }}
         className="w-24 h-16 object-cover rounded-lg"
       />
 
@@ -40,9 +44,7 @@ function ListItem({ car, onBook, onClick }: ListItemProps) {
       </span>
 
       <div className="text-right w-20">
-        <span className="text-sm font-bold text-white">
-          ${car.pricePerDay}
-        </span>
+        <span className="text-sm font-bold text-white">${car.pricePerDay}</span>
         <span className="text-xs text-[#8b93a7]">/day</span>
       </div>
 

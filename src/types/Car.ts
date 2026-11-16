@@ -5,5 +5,5 @@ export interface Car {
   year: number;
   pricePerDay: number;
   available: boolean;
-  imageUrl: string;
+  imageUrl?: string | null;
 }

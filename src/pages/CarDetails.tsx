@@ -29,8 +29,8 @@ function CarDetails() {
         .get(`/api/cars/${id}`)
         .then((response) => {
           const carData = response.data;
-          setCarForm(carData);
-          setImagePreview(carData.imageUrl);
+          setCarForm({ ...carData, imageUrl: carData.imageUrl ?? "" });
+          setImagePreview(carData.imageUrl ?? null);
         })
         .catch((error) => {
           console.error("Error fetching car details:", error);
@@ -48,8 +48,9 @@ function CarDetails() {
   function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (file) {
-      setImagePreview(URL.createObjectURL(file));
-      setCarForm({ ...carForm, imageUrl: imagePreview ?? "" });
+      const uploadedImageUrl = URL.createObjectURL(file);
+      setImagePreview(uploadedImageUrl);
+      setCarForm({ ...carForm, imageUrl: uploadedImageUrl });
     }
   }
 
@@ -139,7 +140,7 @@ function CarDetails() {
                   PNG, JPG up to 5MB
                 </span>
                 <input
-                  value={carForm.imageUrl}
+                  value={carForm.imageUrl ?? ""}
                   type="file"
                   accept="image/*"
                   onChange={handleImageChange}

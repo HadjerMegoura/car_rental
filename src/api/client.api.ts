@@ -13,14 +13,20 @@ const apiClient = axios.create({
 });
 
 let isRefreshing = false;
-let refreshPromise: Promise<any> | null = null;
+let refreshPromise: Promise<unknown> | null = null;
 
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    const isAuthEndpoint = originalRequest.url?.startsWith("/auth/");
+
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !isAuthEndpoint
+    ) {
       originalRequest._retry = true;
 
       if (!isRefreshing) {
@@ -34,7 +40,7 @@ apiClient.interceptors.response.use(
         await refreshPromise;
         return apiClient(originalRequest);
       } catch {
-        window.location.href = "/login";
+        window.location.href = "/";
         return Promise.reject(error);
       }
     }

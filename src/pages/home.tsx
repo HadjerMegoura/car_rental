@@ -1,26 +1,20 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../components/sidebar";
 import Header from "../components/Header";
-import apiClient from "../api/client.api";
+import { authService } from "../services/authService";
 import { getErrorMessage } from "../api/getErrorMessage";
 import { useToast } from "../contexts/ToastContext";
 import { useNavigate } from "react-router-dom";
-
-interface CurrentUser {
-  firstname: string;
-  lastname: string;
-  email: string;
-  role: string;
-}
+import type { User } from "../types/User";
 
 export const Home = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<CurrentUser | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const { showToast } = useToast();
   const navigate = useNavigate();
 
   useEffect(() => {
-    apiClient
-      .get<CurrentUser>("/user/me")
+    authService
+      .getCurrentUser()
       .then((response) => {
         setUser(response.data);
       })
@@ -35,9 +29,9 @@ export const Home = ({ children }: { children: React.ReactNode }) => {
 
   async function handleLogout() {
     try {
-     // await authService.logout();
-      showToast("success", "Logged out successfully.");
-      navigate("/login");
+      await authService.logout();
+      // showToast("success", "Logged out successfully.");
+      navigate("/");
     } catch {
       showToast("error", "Failed to log out. Please try again.");
     }
